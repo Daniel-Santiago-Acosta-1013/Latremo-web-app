@@ -9,15 +9,20 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 9999;
+    transition: all 0.3s ease-in-out;
 }
 
 .modal-content {
     background-color: #fff;
     padding: 1rem;
     border-radius: 8px;
-    width: 70%;
+    width: 80%;
     max-width: 500px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    position: relative;
+    transform: scale(0.9);
+    opacity: 0;
+    transition: all 0.3s ease;
 }
 
 .close-button {
@@ -26,4 +31,27 @@
     top: 10px;
     font-size: 1.5rem;
     cursor: pointer;
+    background-color: #2c3e50;
+    color: white;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-entering,
+.modal-exiting,
+.modal-exited {
+  opacity: 0;
+}
+
+.modal-entered {
+  opacity: 1;
+}
+
+.modal.modal-entered .modal-content {
+    transform: scale(1);
+    opacity: 1;
 }

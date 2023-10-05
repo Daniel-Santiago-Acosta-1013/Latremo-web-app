@@ -3,6 +3,7 @@ import axios from 'axios';
 import EarthquakeFilter from './EarthquakeFilter/EarthquakeFilter';
 import EarthquakeMap from './EarthquakeMap/EarthquakeMap';
 import EarthquakeModal from './EarthquakeModal/EarthquakeModal';
+import { CSSTransition } from 'react-transition-group';
 import 'leaflet/dist/leaflet.css';
 
 interface Earthquake {
@@ -74,18 +75,23 @@ const MapComponent: React.FC = () => {
                 timeframe={timeframe} 
                 setTimeframe={setTimeframe} 
             />
-
+    
             <EarthquakeMap 
                 earthquakes={earthquakes} 
                 onEarthquakeClick={handleEarthquakeClick} 
             />
-
-            {selectedEarthquake && (
+    
+            <CSSTransition 
+                in={!!selectedEarthquake} 
+                timeout={300} 
+                classNames="modal"
+                unmountOnExit
+            >
                 <EarthquakeModal 
-                    earthquake={selectedEarthquake} 
+                    earthquake={selectedEarthquake!} 
                     onClose={handleCloseModal} 
                 />
-            )}
+            </CSSTransition>
         </>
     );
 }
