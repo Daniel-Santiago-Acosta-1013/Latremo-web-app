@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Circle, Tooltip } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
 
@@ -32,9 +32,9 @@ interface EarthquakeResponse {
 const MapComponent: React.FC = () => {
     const [earthquakes, setEarthquakes] = useState<Earthquake[]>([]);
     const [minMagnitude, setMinMagnitude] = useState<number>(0);
-    const [maxDepth, setMaxDepth] = useState<number>(700);  // La mayoría de los sismos son menos profundos que 700 km
+    const [maxDepth, setMaxDepth] = useState<number>(700);
     const [timeframe, setTimeframe] = useState<string>("all_day");
-
+    const [selectedEarthquake, setSelectedEarthquake] = useState<Earthquake | null>(null); // Nuevo estado para el sismo seleccionado
 
     useEffect(() => {
         axios.get<EarthquakeResponse>(`https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/${timeframe}.geojson`)
@@ -54,6 +54,15 @@ const MapComponent: React.FC = () => {
             });
     }, [minMagnitude, maxDepth, timeframe]);
 
+    // Función para abrir la ventana modal al hacer clic en un sismo
+    const handleEarthquakeClick = (quake: Earthquake) => {
+        setSelectedEarthquake(quake);
+    }
+
+    // Función para cerrar la ventana modal
+    const handleCloseModal = () => {
+        setSelectedEarthquake(null);
+    }
 
     return (
         <>
@@ -82,7 +91,7 @@ const MapComponent: React.FC = () => {
                 />
                 {earthquakes.map((quake, idx) => (
                     <div key={idx}>
-                        <Marker position={[quake.lat, quake.lon]}>
+                        <Marker position={[quake.lat, quake.lon]} eventHandlers={{ click: () => handleEarthquakeClick(quake) }}>
                             <Popup>
                                 Magnitud: {quake.magnitude}<br />
                                 Ubicación: {quake.location}<br />
@@ -98,7 +107,28 @@ const MapComponent: React.FC = () => {
                         />
                     </div>
                 ))}
+                <Tooltip permanent={true} direction="bottom" offset={[0, 20]} opacity={1} className="map-tooltip">
+                    <div>
+                        Tamaño del círculo: Magnitud del sismo<br />
+                        Color del círculo: Intensidad (rojo = alto)
+                    </div>
+                </Tooltip>
             </MapContainer>
+
+            {/* Ventana modal para mostrar detalles adicionales del sismo seleccionado */}
+            {selectedEarthquake && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <span className="close-button" onClick={handleCloseModal}>&times;</span>
+                        <h2>Detalles del Sismo</h2>
+                        <p><strong>Magnitud:</strong> {selectedEarthquake.magnitude}</p>
+                        <p><strong>Ubicación:</strong> {selectedEarthquake.location}</p>
+                        <p><strong>Profundidad:</strong> {selectedEarthquake.depth} km</p>
+                        <p><strong>Fecha y Hora:</strong> {selectedEarthquake.time}</p>
+                        <p><a href={selectedEarthquake.url} target="_blank" rel="noreferrer">Más detalles en USGS</a></p>
+                    </div>
+                </div>
+            )}
         </>
     );
 }
