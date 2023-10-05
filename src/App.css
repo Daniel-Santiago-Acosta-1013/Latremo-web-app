@@ -45,3 +45,21 @@ a:hover {
 .leaflet-popup-tip {
   background-color: #2c3e50;
 }
+
+label {
+  display: inline-block;
+  margin-right: 1rem;
+  font-size: 0.9rem;
+}
+
+input, select {
+  margin-top: 0.5rem;
+  padding: 0.4rem;
+  font-size: 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input[type="number"] {
+  width: 80px;
+}
