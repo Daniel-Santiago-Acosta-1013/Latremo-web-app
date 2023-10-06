@@ -1,6 +1,5 @@
 import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Circle, Tooltip } from 'react-leaflet';
-// import * as d3 from 'd3';
 import './EarthquakeMap.css';
 
 interface Earthquake {
