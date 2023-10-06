@@ -1,5 +1,6 @@
 import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Circle, Tooltip } from 'react-leaflet';
+// import * as d3 from 'd3';
 import './EarthquakeMap.css';
 
 interface Earthquake {
@@ -10,6 +11,9 @@ interface Earthquake {
     time: string;
     depth: number;
     url: string;
+    type: string;
+    alert: string;
+    tsunami: number;
 }
 
 interface EarthquakeMapProps {
@@ -28,10 +32,13 @@ const EarthquakeMap: React.FC<EarthquakeMapProps> = ({ earthquakes, onEarthquake
                 <div key={idx}>
                     <Marker position={[quake.lat, quake.lon]} eventHandlers={{ click: () => onEarthquakeClick(quake) }}>
                         <Popup>
-                            Magnitud: {quake.magnitude}<br />
-                            Ubicación: {quake.location}<br />
-                            Profundidad: {quake.depth} km<br />
-                            Fecha y Hora: {quake.time}<br />
+                            <strong>Magnitud:</strong> {quake.magnitude}<br />
+                            <strong>Ubicación:</strong> {quake.location}<br />
+                            <strong>Profundidad:</strong> {quake.depth} km<br />
+                            <strong>Fecha y Hora:</strong> {quake.time}<br />
+                            <strong>Tipo:</strong> {quake.type}<br />
+                            <strong>Alerta:</strong> {quake.alert ? quake.alert : "No disponible"}<br />
+                            <strong>Tsunami:</strong> {quake.tsunami ? 'Sí' : 'No'}<br />
                             <a href={quake.url} target="_blank" rel="noreferrer">Más detalles</a>
                         </Popup>
                     </Marker>
