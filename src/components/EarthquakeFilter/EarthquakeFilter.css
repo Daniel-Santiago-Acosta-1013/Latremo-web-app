@@ -1,33 +1,357 @@
 .earthquake-filter {
     display: flex;
-    justify-content: center;
     flex-wrap: wrap;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: 1.5rem;
+    width: 100%;
+    padding: 1.75rem;
+    background: var(--gradient-surface);
+    backdrop-filter: blur(15px);
+    border-radius: var(--radius-md);
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-md);
+    position: relative;
+    z-index: 10;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    animation: fadeInDown 0.6s ease-out;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+/* Efecto de borde luminoso sutil */
+.earthquake-filter::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: var(--radius-md);
+    padding: 1px;
+    background: linear-gradient(135deg, var(--color-primary), transparent, var(--color-accent));
+    -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0.3;
+}
+
+.filter-control {
+    flex: 1;
+    min-width: 220px;
+    max-width: 300px;
+    transition: transform 0.2s ease-out;
+    position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .earthquake-filter label {
-    font-size: 1rem;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
     display: flex;
     flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.earthquake-filter label:hover {
+    transform: translateY(-2px);
+}
+
+.label-header {
+    display: flex;
     align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    margin-bottom: 0.5rem;
 }
 
-.earthquake-filter input, 
-.earthquake-filter select {
-    margin-top: 0.5rem;
+.label-header span {
+    font-weight: 500;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-primary);
+}
+
+/* Iconos para cada filtro */
+.magnitude-label span::before,
+.depth-label span::before,
+.timeframe-label span::before {
+    content: '';
+    width: 18px;
+    height: 18px;
+    background-color: var(--color-primary);
+    mask-size: cover;
+    -webkit-mask-size: cover;
+    opacity: 0.9;
+}
+
+.magnitude-label span::before {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M13 10V3L4 14h7v7l9-11h-7z'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M13 10V3L4 14h7v7l9-11h-7z'/%3E%3C/svg%3E");
+}
+
+.depth-label span::before {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 14l-7 7m0 0l-7-7m7 7V3'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 14l-7 7m0 0l-7-7m7 7V3'/%3E%3C/svg%3E");
+}
+
+.timeframe-label span::before {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'/%3E%3C/svg%3E");
+}
+
+/* Botón de ayuda y tooltip */
+.help-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-surface-light);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--color-text-secondary);
+    font-size: 0.75rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.help-icon:hover, 
+.help-icon:focus {
+    background: var(--color-primary);
+    color: var(--color-text-primary);
+    transform: scale(1.1);
+}
+
+.help-tooltip {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    background: var(--gradient-surface);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+    width: 220px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 100;
+    line-height: 1.4;
+    animation: fadeIn 0.2s ease-out;
+}
+
+/* Mejora del contenedor del slider y valor */
+.slider-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.slider-value {
+    min-width: 45px;
+    text-align: center;
     padding: 0.5rem;
+    background-color: rgba(30, 37, 48, 0.6);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-accent);
+    flex-shrink: 0;
+}
+
+/* Mejora para el slider */
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    background: rgba(30, 37, 48, 0.8);
+    border-radius: var(--radius-full);
+    outline: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    flex-grow: 1;
+}
+
+/* Estilo para el "thumb" (control deslizante) */
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 0 0 10px rgba(95, 111, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-top: 0;
+}
+
+.slider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 0 0 10px rgba(95, 111, 255, 0.5);
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-top: 0;
+}
+
+/* Efectos hover para el thumb */
+.slider::-webkit-slider-thumb:hover {
+    background: var(--color-primary-light);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.slider::-moz-range-thumb:hover {
+    background: var(--color-primary-light);
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* Marca el fondo del rango ya recorrido */
+.slider::-webkit-slider-runnable-track {
+    background: linear-gradient(90deg, 
+        var(--color-primary) 0%, 
+        var(--color-primary) var(--percent, 50%), 
+        rgba(30, 37, 48, 0.8) var(--percent, 50%)
+    );
+    border-radius: var(--radius-full);
+    height: 8px;
+}
+
+/* Estilo para el dropdown */
+.select-timeframe {
+    background-color: rgba(30, 37, 48, 0.6);
+    color: var(--color-text-primary);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+    padding: 0.9rem 1.25rem;
     font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    transition: border-color 0.3s ease;
+    font-weight: 500;
+    width: 100%;
+    transition: all 0.2s ease-out;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    outline: none;
+    backdrop-filter: blur(4px);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%235f6fff'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.25rem;
+    padding-right: 2.5rem;
+    cursor: pointer;
 }
 
-.earthquake-filter input[type="number"] {
-    width: 100px;
+.select-timeframe:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(95, 111, 255, 0.25), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
 }
 
-.earthquake-filter input:focus,
-.earthquake-filter select:focus {
-    border-color: #2980b9;
+.select-timeframe option {
+    background-color: var(--color-surface-light);
+    color: var(--color-text-primary);
+    padding: 1rem;
+}
+
+/* Botón de refresh */
+.refresh-button {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: var(--shadow-sm);
+    min-height: 52px;
+    align-self: flex-end;
+    min-width: 140px;
+}
+
+.refresh-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.refresh-button:active {
+    transform: translateY(0);
+}
+
+.refresh-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15'%3E%3C/path%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15'%3E%3C/path%3E%3C/svg%3E");
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+}
+
+.refresh-button:hover .refresh-icon {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .earthquake-filter {
+        padding: 1.5rem;
+        gap: 1.5rem;
+        flex-direction: column;
+    }
+    
+    .filter-control {
+        min-width: 100%;
+        max-width: 100%;
+    }
+    
+    .refresh-button {
+        align-self: center;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .help-tooltip {
+        width: 180px;
+        right: 0;
+        left: auto;
+    }
 }

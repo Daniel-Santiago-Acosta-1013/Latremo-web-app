@@ -1,47 +1,420 @@
-body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f4f4f8;
-  color: #333;
+/* Importación de fuentes modernas */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Paleta de colores oscura con gradientes modernos */
+  --color-background: #12151E;
+  --color-surface: #1E2130;
+  --color-surface-light: #2A2D3A;
+  --color-primary: #5F6FFF;
+  --color-primary-light: #7580FF;
+  --color-secondary: #3F4CAF;
+  --color-accent: #56CCF2;
+  --color-success: #27AE60;
+  --color-warning: #F2C94C;
+  --color-danger: #EB5757;
+  --color-text-primary: #F5F5F5;
+  --color-text-secondary: #B3B8D2;
+  
+  /* Gradientes */
+  --gradient-background: linear-gradient(135deg, #12151E, #16192B);
+  --gradient-surface: linear-gradient(135deg, rgba(26, 29, 41, 0.8), rgba(30, 33, 48, 0.8));
+  --gradient-primary: linear-gradient(135deg, #5F6FFF, #7580FF);
+  
+  /* Efectos de sombra */
+  --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.4);
+  
+  /* Radios para bordes */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+  
+  /* Breakpoints responsivos */
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+}
+
+/* Reset global y configuración básica */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background: var(--gradient-background);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(95, 111, 255, 0.1) 0%, transparent 20%),
+    radial-gradient(circle at 90% 80%, rgba(0, 230, 195, 0.1) 0%, transparent 25%);
+  background-attachment: fixed;
+}
+
+.app-subtitle {
+  text-align: center;
 }
 
 #root {
-  max-width: 1280px;
+  max-width: 100%;
+  min-height: 100vh;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  background-color: #fff;
-  border-radius: 8px;
-  overflow: hidden;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+  position: relative;
+  z-index: 0;
+}
+
+/* Tipografía */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 0.5em;
+  line-height: 1.2;
 }
 
 h1 {
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
-  color: #2c3e50;
+  font-size: 2.75rem;
+  font-weight: 700;
+  margin-bottom: 0.7em;
+  text-align: center;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: -0.02em;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+p {
+  margin-bottom: 1rem;
+  color: var(--color-text-secondary);
 }
 
 a {
-  color: #2980b9;
+  color: var(--color-primary);
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: all 0.2s ease;
+  position: relative;
 }
 
 a:hover {
-  color: #1a5276;
+  color: var(--color-primary-light);
 }
 
-.leaflet-popup-content-wrapper, .leaflet-popup-tip {
-  background-color: #2c3e50;
-  color: #fff;
-  box-shadow: none;
-  border-radius: 4px;
+a:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background: var(--gradient-primary);
+  transition: width 0.3s ease;
 }
 
-.leaflet-popup-content-wrapper {
-  padding: 8px 12px;
+a:hover:after {
+  width: 100%;
 }
 
+/* Contenedor principal */
+.app-container {
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  animation: fadeIn 0.5s ease-out;
+  position: relative;
+}
+
+/* Personalización de Leaflet */
+.leaflet-container {
+  font-family: 'Outfit', sans-serif;
+}
+
+.leaflet-control-zoom {
+  border-radius: var(--radius-md) !important;
+  overflow: hidden;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.leaflet-control-zoom a {
+  background-color: var(--color-surface) !important;
+  color: var(--color-text-primary) !important;
+  border-color: var(--color-surface-light) !important;
+  transition: all 0.2s ease;
+}
+
+.leaflet-control-zoom a:hover {
+  background-color: var(--color-surface-light) !important;
+}
+
+.leaflet-popup-content-wrapper, 
 .leaflet-popup-tip {
-  background-color: #2c3e50;
+  background: var(--gradient-surface);
+  backdrop-filter: blur(10px);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.leaflet-popup-content {
+  margin: 16px;
+  line-height: 1.6;
+}
+
+.leaflet-popup-content strong {
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.leaflet-popup-close-button {
+  color: var(--color-text-secondary) !important;
+  transition: all 0.2s ease;
+}
+
+.leaflet-popup-close-button:hover {
+  color: var(--color-text-primary) !important;
+  transform: rotate(90deg);
+}
+
+/* Tooltip del mapa */
+.map-tooltip {
+  background: var(--gradient-surface);
+  backdrop-filter: blur(10px);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-md);
+  padding: 12px 18px;
+  font-size: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-md);
+  max-width: 250px;
+  line-height: 1.5;
+}
+
+/* Scrollbars personalizadas */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gradient-primary);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-light);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Diseño responsive */
+@media (max-width: 768px) {
+  .app-container {
+    padding: 1.25rem;
+    gap: 1.5rem;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+}
+
+/* Clases de utilidad */
+.text-accent {
+  color: var(--color-accent);
+}
+
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-secondary {
+  color: var(--color-secondary);
+}
+
+.text-gradient {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Indicador de carga */
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: var(--gradient-surface);
+  border-radius: var(--radius-md);
+  margin: 1rem 0;
+  box-shadow: var(--shadow-md);
+  animation: fadeIn 0.5s ease-out;
+  color: var(--color-text-secondary);
+  gap: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(95, 111, 255, 0.2);
+  border-radius: 50%;
+  border-top-color: var(--color-primary);
+  animation: spin 1s linear infinite;
+}
+
+/* Mensaje de no datos */
+.no-data-message {
+  background: var(--gradient-surface);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  margin: 1rem 0;
+  text-align: center;
+  color: var(--color-text-secondary);
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-weight: 500;
+}
+
+/* Última actualización */
+.last-updated {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  background: rgba(30, 33, 48, 0.7);
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 1rem;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+}
+
+.last-updated::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-success);
+  margin-right: 8px;
+  display: inline-block;
+}
+
+/* Efecto de mapa desactivado durante la carga */
+.earthquake-map.is-loading {
+  opacity: 0.7;
+  pointer-events: none;
+  filter: grayscale(20%);
+  transition: all 0.3s ease;
+}
+
+/* Animaciones */
+@keyframes glow {
+  0% { box-shadow: 0 0 5px rgba(95, 111, 255, 0.3); }
+  50% { box-shadow: 0 0 15px rgba(95, 111, 255, 0.5); }
+  100% { box-shadow: 0 0 5px rgba(95, 111, 255, 0.3); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Clase adicional para hacer relucir elementos interactivos */
+.glow-effect {
+  animation: glow 2s infinite;
+}
+
+/* Estilos adicionales para la unidad km */
+.unit {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  margin-left: 2px;
+  opacity: 0.8;
+}
+
+/* Media queries para responsividad */
+@media (max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .app-title {
+    font-size: 1.8rem;
+  }
+  
+  .app-container {
+    padding: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

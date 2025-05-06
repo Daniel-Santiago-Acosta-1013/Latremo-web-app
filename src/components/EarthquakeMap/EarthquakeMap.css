@@ -1,11 +1,229 @@
 .earthquake-map {
     width: 100%;
-    height: 80vh;
+    height: 70vh;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: var(--shadow-lg);
+    animation: fadeIn 0.8s ease-out;
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+}
+
+/* Efecto de borde iluminado */
+.earthquake-map::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: var(--radius-lg);
+    padding: 2px;
+    background: linear-gradient(135deg, 
+        rgba(95, 111, 255, 0.3), 
+        rgba(0, 0, 0, 0), 
+        rgba(0, 230, 195, 0.3));
+    -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Adornos decorativos */
+.earthquake-map::after {
+    content: '';
+    position: absolute;
+    bottom: -50px;
+    left: -50px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(0, 230, 195, 0.1), transparent 70%);
+    border-radius: 50%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Estilos para los controles del mapa */
+.leaflet-bar {
+    border-radius: var(--radius-md) !important;
+    overflow: hidden;
+    box-shadow: var(--shadow-md) !important;
+    border: none !important;
+}
+
+.leaflet-bar a {
+    background: var(--color-surface) !important;
+    color: var(--color-text-primary) !important;
+    border: none !important;
+    width: 40px !important;
+    height: 40px !important;
+    line-height: 40px !important;
+    transition: all 0.2s ease;
+}
+
+.leaflet-bar a:hover {
+    background: var(--color-surface-light) !important;
+    color: var(--color-primary) !important;
+}
+
+.leaflet-bar a:first-child {
+    border-radius: var(--radius-md) var(--radius-md) 0 0 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.leaflet-bar a:last-child {
+    border-radius: 0 0 var(--radius-md) var(--radius-md) !important;
+}
+
+/* Estilos para los marcadores y popups */
+.leaflet-marker-icon {
+    filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.3));
+    transition: all 0.2s ease;
+}
+
+.leaflet-marker-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Estilo para los círculos */
+.leaflet-interactive {
+    transition: fill-opacity 0.3s ease, stroke-opacity 0.3s ease;
+}
+
+.earthquake-tooltip {
+    background: var(--gradient-surface);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    box-shadow: var(--shadow-md);
+    max-width: 300px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.earthquake-tooltip strong {
+    color: var(--color-accent);
+    font-weight: 500;
+    display: inline-block;
+    min-width: 90px;
+}
+
+/* Atribuciones del mapa */
+.leaflet-control-attribution {
+    background: rgba(10, 15, 20, 0.7) !important;
+    backdrop-filter: blur(10px);
+    color: var(--color-text-secondary) !important;
+    padding: 5px 8px !important;
+    border-radius: var(--radius-sm) !important;
+    font-size: 0.7rem !important;
+}
+
+.leaflet-control-attribution a {
+    color: var(--color-primary) !important;
+}
+
+/* Control de capas si se añade después */
+.leaflet-control-layers {
+    background: var(--gradient-surface) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: var(--radius-md) !important;
+    box-shadow: var(--shadow-md) !important;
+    color: var(--color-text-primary) !important;
+}
+
+/* Animación de pulso para los círculos (se agrega vía JavaScript) */
+@keyframes pulsate {
+    0% {
+        opacity: 0.7;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.85;
+        transform: scale(1.03);
+    }
+    100% {
+        opacity: 0.7;
+        transform: scale(1);
+    }
 }
 
 .map-tooltip {
-    background-color: #2c3e50;
-    color: #fff;
-    border-radius: 4px;
-    padding: 5px 10px;
+    background: var(--gradient-surface);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    box-shadow: var(--shadow-md);
+    max-width: 250px;
+    line-height: 1.5;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 900;
+    pointer-events: auto !important;
+}
+
+/* Botón toggle para pantallas pequeñas */
+.map-tooltip-toggle {
+    display: none;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 36px;
+    height: 36px;
+    background: var(--color-primary);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1000;
+    transform: translate(30%, -30%);
+    box-shadow: var(--shadow-md);
+    transition: all 0.2s ease;
+    pointer-events: auto !important;
+}
+
+.map-tooltip-toggle:hover,
+.map-tooltip-toggle:focus {
+    background: var(--color-primary-light);
+    transform: translate(30%, -30%) scale(1.1);
+}
+
+.map-tooltip-toggle:active {
+    transform: translate(30%, -30%) scale(0.95);
+}
+
+.map-tooltip.collapsed {
+    max-height: 40px;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.map-tooltip.collapsed .text-gradient {
+    display: block;
+}
+
+.map-tooltip.collapsed span, 
+.map-tooltip.collapsed small {
+    display: none;
+}
+
+/* Media query para pantallas pequeñas */
+@media (max-width: 768px) {
+    .map-tooltip-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .map-tooltip {
+        padding-right: 30px;
+    }
 }
